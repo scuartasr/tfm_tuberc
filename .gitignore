@@ -1,0 +1,61 @@
+# ========================
+# ENTORNOS Y DEPENDENCIAS
+# ========================
+# Entorno virtual de Python
+.venv/
+venv/
+env/
+
+# Entorno de R
+.Rhistory
+.RData
+.Rproj.user/
+.Ruserdata
+renv/library/
+renv/python/
+
+# Archivos de entorno (si usas conda)
+*.conda
+*.env
+*.yml
+
+# ========================
+# DATOS Y RESULTADOS
+# ========================
+datos/crudos
+
+
+# Recomendación de ChatGPT:
+# data/raw/
+# data/processed/
+# models/
+# results/
+# *.rds
+# *.pkl
+# *.h5
+# *.csv
+# *.xlsx
+# *.parquet
+# *.feather
+
+# ========================
+# NOTEBOOKS Y TEMPORALES
+# ========================
+.ipynb_checkpoints/
+*.pyc
+__pycache__/
+.DS_Store
+*.log
+*.tmp
+
+# ========================
+# EDITORES
+# ========================
+# VS Code
+.vscode/
+
+# RStudio
+*.Rproj
+
+# Jupyter
+*.nbconvert.ipynb
