@@ -1,5 +1,8 @@
 #!/bin/bash
+echo "📦 Actualizando pip..."
+pip install --upgrade pip
 
-pip3 install --upgrade pip
-pip3 install -r requirements.txt
-pip3 install -e .
+echo "📦 Instalando dependencias..."
+pip install -r requirements.txt
+
+echo "✅ Listo."
