@@ -59,3 +59,5 @@ __pycache__/
 
 # Jupyter
 *.nbconvert.ipynb
+
+.DS_Store
