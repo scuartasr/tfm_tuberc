@@ -22,7 +22,8 @@ renv/python/
 # ========================
 # DATOS Y RESULTADOS
 # ========================
-datos/crudos
+data/raw/
+
 
 
 # Recomendación de ChatGPT:
