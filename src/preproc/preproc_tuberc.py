@@ -132,6 +132,18 @@ if __name__ == "__main__":
     df_final.to_csv(out_path, index=False)
     log(f"💾 Guardado en: {out_path.resolve()}")
 
+    # Guardar agregado por gr_et
+    try:
+        if all(c in df_final.columns for c in ["ano", "sexo", "gr_et", "conteo_defunciones"]):
+            df_gr_et = (
+                df_final.groupby(["ano", "sexo", "gr_et"], as_index=False)["conteo_defunciones"].sum()
+            )
+            out_path_gr = out_dir / "defunciones_por_gr_et.csv"
+            df_gr_et.to_csv(out_path_gr, index=False)
+            log(f"💾 Guardado agregado por gr_et en: {out_path_gr.resolve()}")
+    except Exception as e:
+        log(f"⚠️ No se pudo guardar el agregado por gr_et: {e}")
+
     # Resumen en consola controlado por VERBOSE_LEVEL (>=2) o SHOW_SUMMARY si no se definió VERBOSE_LEVEL
     if VERBOSE_ENV is not None:
         show_summary = VERBOSE_LEVEL >= 2
@@ -148,6 +160,23 @@ if __name__ == "__main__":
             )
             log("\n🔎 Resumen por año y sexo:", min_level=2)
             log(resumen_ano_sexo.to_string(index=False), min_level=2)
+
+            if 'gr_et' in df_final.columns:
+                resumen_gr = (
+                    df_final.groupby(['ano','sexo','gr_et'], as_index=False)['conteo_defunciones']
+                    .sum().sort_values(['ano','sexo','gr_et'])
+                )
+                log("\n📚 Resumen por año, sexo y gr_et:", min_level=2)
+                log(resumen_gr.to_string(index=False), min_level=2)
+
+            if 'edad_grupo' in df_final.columns:
+                # Vista rápida de top 10 grupos más frecuentes
+                resumen_edad = (
+                    df_final.groupby(['edad_grupo'], as_index=False)['conteo_defunciones']
+                    .sum().sort_values('conteo_defunciones', ascending=False).head(10)
+                )
+                log("\n👶 Top 10 grupos 'edad_grupo' por defunciones (global):", min_level=2)
+                log(resumen_edad.to_string(index=False), min_level=2)
 
             resumen_ano = (
                 df_final

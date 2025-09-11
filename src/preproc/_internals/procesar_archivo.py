@@ -13,7 +13,7 @@ from src.preproc._internals.filtrar_por_causa_defuncion import filtrar_por_causa
 from src.preproc._internals.leer_datos import leer_datos
 from src.preproc._internals.normalizar_nombres_columnas import normalizar_nombres_columnas
 from src.preproc._internals.seleccionar_variables_relevantes import seleccionar_variables_relevantes
-from src.preproc._internals.corregir_grupos_etarios import corregir_grupos_etarios_agrupado
+from src.preproc._internals.corregir_grupos_etarios import corregir_grupos_etarios_agrupado, asignar_gr_et_sin_reagrupar
 
 
 def procesar_archivo(ruta: str) -> pd.DataFrame | None:
@@ -47,9 +47,12 @@ def procesar_archivo(ruta: str) -> pd.DataFrame | None:
         return None
     df = seleccionar_variables_relevantes(df, columnas)
 
-    # Agrupar por gru_ed1 (base intermedia)
+    # Agrupar por gru_ed1 (base intermedia con conteo)
     df = agrupar_por_ano_sexo(df, 'ano', 'sexo', 'gru_ed1')
 
-    # Corregir grupos etarios por año y re-agrupar por gr_et
-    df = corregir_grupos_etarios_agrupado(df)
+    # Asignar gr_et según reglas, sin perder el detalle por gru_ed1
+    df = asignar_gr_et_sin_reagrupar(df)
+    # Renombrar gru_ed1 -> edad_grupo para mayor claridad
+    if 'gru_ed1' in df.columns:
+        df = df.rename(columns={'gru_ed1': 'edad_grupo'})
     return df

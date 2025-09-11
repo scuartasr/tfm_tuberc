@@ -3,12 +3,13 @@ import pandas as pd
 from pathlib import Path
 
 
-def leer_datos(ruta_archivo: str) -> pd.DataFrame | None:
+def leer_datos(ruta_archivo: str, nrows: int | None = None) -> pd.DataFrame | None:
     """
     Lee datos desde un archivo .csv o .txt detectando automáticamente el separador.
 
     Parámetros:
     ruta_archivo (str): Ruta al archivo a leer.
+    nrows (int | None): Número de filas a leer desde el archivo (None = todas).
 
     Retorna:
     pd.DataFrame: DataFrame con los datos leídos o None si ocurre un error.
@@ -29,6 +30,7 @@ def leer_datos(ruta_archivo: str) -> pd.DataFrame | None:
                 sep=None,              # inferir delimitador automáticamente
                 engine="python",      # necesario para sep=None
                 encoding=enc,
+                nrows=nrows,
             )
             print(f"✅ Datos leídos correctamente desde {ruta_archivo} con encoding '{enc}'. Forma: {datos.shape}")
             return datos
@@ -49,6 +51,7 @@ def leer_datos(ruta_archivo: str) -> pd.DataFrame | None:
             engine="python",
             encoding=encodings[-1],
             errors="replace",
+            nrows=nrows,
         )
         print(f"✅ Datos leídos con reemplazo de caracteres desde {ruta_archivo}. Forma: {datos.shape}")
         return datos

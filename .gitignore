@@ -26,7 +26,6 @@ data/raw/
 
 
 
-# Recomendación de ChatGPT:
 # data/raw/
 # data/processed/
 # models/
@@ -61,4 +60,6 @@ __pycache__/
 # Jupyter
 *.nbconvert.ipynb
 
+.DS_Store
+.DS_Store
 .DS_Store
