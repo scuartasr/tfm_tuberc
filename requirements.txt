@@ -25,3 +25,7 @@ seaborn==0.13.2
 
 # Otros
 tqdm==4.67.1
+
+# Bayes
+pymc==5.16.2
+arviz==0.20.0

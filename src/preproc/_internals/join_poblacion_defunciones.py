@@ -75,6 +75,8 @@ def calcular_tasa_por_100k(
     col_poblacion: str = "poblacion",
     col_defunciones: str = "conteo_defunciones",
     out_col: str = "tasa_x100k",
+    out_col_pura: str = "tasa",
+    min_rate: float | None = 1e-8,
 ) -> pd.DataFrame:
     """
     Añade una columna de tasa por 100.000 habitantes: (defunciones/población)*100000.
@@ -86,9 +88,22 @@ def calcular_tasa_por_100k(
         return out
     pop = pd.to_numeric(out[col_poblacion], errors="coerce")
     defu = pd.to_numeric(out[col_defunciones], errors="coerce")
-    with pd.option_context('mode.use_inf_as_na', True):
-        tasa = (defu / pop) * 100000.0
-        # evitar división por cero
-        tasa = tasa.where(pop > 0)
-    out[out_col] = tasa.astype(float)
+
+    # Tasa pura y por 100k.
+    tasa_pura = defu / pop
+
+    # Aplicar tasa mínima cuando no hay defunciones (0 o NaN) y población válida (>0)
+    if min_rate is not None:
+        mask_pob_valida = pop > 0
+        mask_sin_def = defu.isna() | (defu <= 0)
+        tasa_pura = tasa_pura.where(~(mask_pob_valida & mask_sin_def), other=min_rate)
+
+    tasa_x100k = tasa_pura * 100000.0
+
+    # Evitar valores cuando población no válida
+    tasa_pura = tasa_pura.where(pop > 0)
+    tasa_x100k = tasa_x100k.where(pop > 0)
+
+    out[out_col] = tasa_x100k.astype(float)
+    out[out_col_pura] = tasa_pura.astype(float)
     return out

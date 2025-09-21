@@ -1,5 +1,12 @@
 from __future__ import annotations
 
+"""
+Script: preproc_poblacion.py
+
+Referencia: ver 'Diccionario de variables' para definiciones de `ano`, `sexo`, `edad`, `poblacion` y más.
+docs/index.md#diccionario-de-variables
+"""
+
 import argparse
 import os
 import re

@@ -1,4 +1,11 @@
 from __future__ import annotations
+
+"""
+Script: preproc_gret_poblacion.py
+
+Referencia: ver 'Diccionario de variables' para definiciones de `ano`, `sexo`, `edad`, `gr_et`, etc.
+docs/index.md#diccionario-de-variables
+"""
 import argparse
 import os
 from typing import Optional, Sequence

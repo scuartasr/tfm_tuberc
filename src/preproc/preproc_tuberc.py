@@ -2,6 +2,9 @@
 # Preprocesamiento de datos de defunción
 # Autor: [Simón Cuartas Rendón]
 # Fecha: [2025-2S]
+#
+# Referencia: ver 'Diccionario de variables' para definiciones de `ano`, `sexo`, `gr_et`, etc.
+# docs/index.md#diccionario-de-variables
 
 #
 # 0. Librerías necesarias

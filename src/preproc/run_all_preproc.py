@@ -1,5 +1,12 @@
 from __future__ import annotations
 
+"""
+Script: run_all_preproc.py
+
+Referencia: ver 'Diccionario de variables' (docs/index.md#diccionario-de-variables) para los
+significados de columnas clave que aparecen en las salidas de los scripts invocados.
+"""
+
 import argparse
 import os
 import subprocess
