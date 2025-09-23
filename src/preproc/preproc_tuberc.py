@@ -144,6 +144,17 @@ if __name__ == "__main__":
             out_path_gr = out_dir / "defunciones_por_gr_et.csv"
             df_gr_et.to_csv(out_path_gr, index=False)
             log(f"💾 Guardado agregado por gr_et en: {out_path_gr.resolve()}")
+
+            # Además: versión agregada por año y grupo etario (sin sexo)
+            try:
+                df_gr_et_ns = (
+                    df_final.groupby(["ano", "gr_et"], as_index=False)["conteo_defunciones"].sum()
+                )
+                out_path_gr_ns = out_dir / "defunciones_por_gr_et_sin_sexo.csv"
+                df_gr_et_ns.to_csv(out_path_gr_ns, index=False)
+                log(f"💾 Guardado agregado por gr_et (sin sexo) en: {out_path_gr_ns.resolve()}")
+            except Exception as e:
+                log(f"⚠️ No se pudo guardar el agregado sin sexo: {e}")
     except Exception as e:
         log(f"⚠️ No se pudo guardar el agregado por gr_et: {e}")
 

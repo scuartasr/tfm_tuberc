@@ -65,6 +65,13 @@ python src/preproc/run_all_preproc.py --no-lexis-t
 python src/preproc/run_all_preproc.py --no-lexis-por-sexo
 ```
 
+### Salidas agregadas sin sexo (nuevo)
+
+Además, ahora se generan versiones agregadas que excluyen el sexo (suma de ambos sexos):
+
+- `data/processed/poblacion/poblacion_colombia_gr_et_sin_sexo.csv` (agregado por `ano` y `gr_et`), columnas: `ano, gr_et, poblacion`.
+- `data/processed/defunc/defunciones_por_gr_et_sin_sexo.csv` (agregado por `ano` y `gr_et`), columnas: `ano, gr_et, conteo_defunciones`.
+
 ### Servir y publicar la documentación (MkDocs)
 
 Servir localmente:

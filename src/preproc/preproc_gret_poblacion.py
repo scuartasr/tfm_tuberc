@@ -70,6 +70,21 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 		out_path = _build_output_path(args.output, args.outdir)
 		df_out.to_csv(out_path, index=False)
 		print(f"\nEscrito a: {out_path}")
+
+		# Además: versión agregada por año y grupo etario (sin sexo)
+		try:
+			if all(c in df_out.columns for c in ["ano", "gr_et", "poblacion"]):
+				df_ns = (
+					df_out.groupby(["ano", "gr_et"], as_index=False)["poblacion"].sum()
+				)
+				outdir_ns = os.path.dirname(out_path)
+				out_path_ns = os.path.join(outdir_ns, "poblacion_colombia_gr_et_sin_sexo.csv")
+				df_ns.to_csv(out_path_ns, index=False)
+				print(f"Escrito agregada sin sexo a: {out_path_ns}")
+			else:
+				print("⚠️ No se pudieron generar agregados sin sexo: faltan columnas requeridas")
+		except Exception as e:
+			print(f"⚠️ No se pudo escribir versión sin sexo: {e}")
 	else:
 		print("\nDry-run: no se escribió archivo de salida.")
 

@@ -21,10 +21,12 @@ Esta sección documenta el pipeline de preprocesamiento usado para construir las
 ```
 raw/poblacion (DANE CSV) ──▶ preproc_poblacion.py ──▶ data/processed/poblacion/poblacion_colombia_larga.csv
 																					 │
-																					 └─▶ preproc_gret_poblacion.py ──▶ data/processed/poblacion/poblacion_colombia_gr_et.csv
+													 └─▶ preproc_gret_poblacion.py ──▶ data/processed/poblacion/poblacion_colombia_gr_et.csv
+													 										└──────────────────────────────────────────▶ data/processed/poblacion/poblacion_colombia_gr_et_sin_sexo.csv
 
 raw/defunc (Defun*.txt/csv) ──▶ preproc_tuberc.py ──▶ data/processed/defunc/defunciones_agrupadas.csv
-																														└──────────────────────────────────────────▶ data/processed/defunc/defunciones_por_gr_et.csv
+																				└──────────────────────────────────────────▶ data/processed/defunc/defunciones_por_gr_et.csv
+																									└──────────────────────────────────────────▶ data/processed/defunc/defunciones_por_gr_et_sin_sexo.csv
 
 								 población (gr_et) + defunciones (gr_et) ──▶ preproc_poblac_defunc.py ──▶ data/processed/mortalidad/poblacion_defunciones_por_gr_et.csv
 ```
@@ -65,13 +67,16 @@ source .venv/bin/activate
 	- `--input`: CSV largo de población (por defecto el generado en el paso 1).
 	- `--output` / `--outdir`.
 	- `--dry-run`, `--rows`.
-- Salida por defecto: `data/processed/poblacion/poblacion_colombia_gr_et.csv` con columnas `ano`, `sexo` (1/2), `gr_et`, `poblacion`.
+- Salidas:
+	- Por defecto: `data/processed/poblacion/poblacion_colombia_gr_et.csv` con columnas `ano`, `sexo` (1/2), `gr_et`, `poblacion`.
+	- Agregada sin sexo: `data/processed/poblacion/poblacion_colombia_gr_et_sin_sexo.csv` con columnas `ano`, `gr_et`, `poblacion`.
 
 3) `src/preproc/preproc_tuberc.py`
 
 - Función: procesa masivamente `data/raw/defunc/Defun*.{txt,csv}`, concatena resultados y guarda:
 	- `data/processed/defunc/defunciones_agrupadas.csv`
 	- `data/processed/defunc/defunciones_por_gr_et.csv` (agregado por `ano, sexo, gr_et`)
+	- `data/processed/defunc/defunciones_por_gr_et_sin_sexo.csv` (agregado por `ano, gr_et`, excluye `sexo`)
 - Variables de entorno (no usa flags CLI):
 	- `DEBUG_MAX_FILES=N`: limita cantidad de archivos a procesar (útil para depurar).
 	- `VERBOSE_LEVEL={0,1,2}`: controla verbosidad (0 mínimo; 2 incluye resúmenes).
@@ -115,8 +120,10 @@ source .venv/bin/activate
 - Salidas clave del pipeline:
 	- `data/processed/poblacion/poblacion_colombia_larga.csv`
 	- `data/processed/poblacion/poblacion_colombia_gr_et.csv`
+	- `data/processed/poblacion/poblacion_colombia_gr_et_sin_sexo.csv`
 	- `data/processed/defunc/defunciones_agrupadas.csv`
 	- `data/processed/defunc/defunciones_por_gr_et.csv`
+	- `data/processed/defunc/defunciones_por_gr_et_sin_sexo.csv`
 	- `data/processed/mortalidad/poblacion_defunciones_por_gr_et.csv`
 	- `data/processed/mortalidad/tasas_mortalidad_gret_per.csv`
 	- `data/processed/mortalidad/tasa_mortalidad_lexis.csv`
