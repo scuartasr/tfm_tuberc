@@ -99,9 +99,25 @@ def _id_columns(df: pd.DataFrame) -> Sequence[str]:
 def _read_population_csv(path: str, nrows: Optional[int] = None) -> pd.DataFrame:
     """Lee CSV detectando separador y probando codificaciones comunes."""
     try:
-        return pd.read_csv(path, nrows=nrows, sep=None, engine="python")
+        # IMPORTANTE: leemos todo como texto (dtype=str) para NO perder ceros finales
+        # cuando pandas interpreta '380.350' como 380.35 (float) y luego se trunca a 38035.
+        # Más adelante normalizamos quitando separadores de miles con _clean_poblacion_numeric.
+        return pd.read_csv(
+            path,
+            nrows=nrows,
+            sep=';',
+            engine='python',
+            dtype=str,
+        )
     except UnicodeDecodeError:
-        return pd.read_csv(path, nrows=nrows, sep=None, engine="python", encoding="latin1")
+        return pd.read_csv(
+            path,
+            nrows=nrows,
+            sep=';',
+            engine='python',
+            encoding='latin1',
+            dtype=str,
+        )
 
 
 def _melt_genero_edad(df: pd.DataFrame) -> pd.DataFrame:

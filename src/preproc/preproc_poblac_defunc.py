@@ -54,6 +54,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 	parser.add_argument("--output", default=None, help="Ruta de salida del CSV unido.")
 	parser.add_argument("--outdir", default=DEFAULT_OUTDIR, help="Carpeta de salida si no hay --output.")
 	parser.add_argument("--fill-zeros", action="store_true", help="Rellenar NaN de defunciones con 0.")
+	parser.add_argument("--with-checks", action="store_true", help="Ejecutar validaciones de integridad tras generar los dataframes.")
 	parser.add_argument("--dry-run", action="store_true", help="No escribe archivo, solo vista previa.")
 	parser.add_argument("--rows", type=int, default=None, help="Recorta filas en vista previa.")
 	# Flags de control para matrices de Lexis (por defecto: generar todas)
@@ -86,6 +87,34 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
 	# Indexar el periodo usando utilitario interno
 	df_final = agregar_indice_periodo(df_final)
+
+	# Validaciones opcionales
+	if args.with_checks:
+		try:
+			from src.preproc._internals.validaciones import (
+				validar_poblacion,
+				validar_defunciones,
+				validar_cruce,
+				resumen_advertencias,
+			)
+		except ImportError as e:
+			print(f"⚠️ No se pudieron importar validaciones: {e}")
+		else:
+			# Intentar leer población y defunciones originales para validación (si existen en disco)
+			try:
+				df_pop = pd.read_csv(args.pop)
+				pop_warns = validar_poblacion(df_pop, critical=False)
+				resumen_advertencias("Población", pop_warns)
+			except Exception as e:
+				print(f"⚠️ No se pudo validar población: {e}")
+			try:
+				df_def = pd.read_csv(args.defunc)
+				def_warns = validar_defunciones(df_def)
+				resumen_advertencias("Defunciones", def_warns)
+			except Exception as e:
+				print(f"⚠️ No se pudo validar defunciones: {e}")
+			cruce_warns = validar_cruce(df_final)
+			resumen_advertencias("Cruce", cruce_warns)
 
 	if not args.dry_run:
 		out_path = _build_output_path(args.output, args.outdir)

@@ -38,8 +38,82 @@ Comandos útiles (zsh):
 source .venv/bin/activate
 
 # Ejecutar orquestador del preprocesamiento
-python src/preproc/run_all_preproc.py --fill-zeros --tuberc-verbose 2
+python src/preproc/run_all_preproc.py --fill-zeros --with-checks --tuberc-verbose 2
 ```
+
+## Uso rápido del pipeline
+
+Ejecuta todo el flujo (población → agregados → defunciones → cruce + tasas + matrices Lexis) con validaciones:
+
+```bash
+source .venv/bin/activate
+python src/preproc/run_all_preproc.py --fill-zeros --with-checks --tuberc-verbose 2
+```
+
+Modo depuración (procesar pocas filas/archivos):
+
+```bash
+source .venv/bin/activate
+python src/preproc/run_all_preproc.py --dry-run --rows 100 --tuberc-verbose 1 --tuberc-max-files 3
+```
+
+Ejecutar sólo el cruce final con validaciones activadas:
+
+```bash
+python src/preproc/preproc_poblac_defunc.py --fill-zeros --with-checks
+```
+
+## Validaciones de integridad (nuevo)
+
+Se incorporó un módulo ligero de validaciones en `src/preproc/_internals/validaciones.py` para detectar regresiones tempranas:
+
+- `validar_poblacion`: acepta esquema largo (`ano, sexo, edad, poblacion`) o agregado (`ano, sexo, gr_et, poblacion`). Verifica:
+	- Columnas mínimas según el esquema.
+	- Rango de años extremo (advertencias si faltan 1979 o 2023).
+	- Referencia crítica hombres 0–4 año 1979 = 1,795,941 (detecta regreso del bug de truncamiento).
+	- Ausencia de patrones de miles residuales (p.ej. `380.350`).
+	- No negatividad de la población.
+- `validar_defunciones`: columnas requeridas, valores inesperados de `sexo`, no negativos.
+- `validar_cruce`: coherencia población/defunciones tras el join (no defunciones>0 con población=0 salvo casos que requieren inspección, y reporte de defunciones > población).
+
+Para activar las validaciones en el flujo completo: añade `--with-checks` al orquestador o al script de cruce.
+
+Ejemplo de salida esperada sin advertencias:
+
+```
+✓ Población: sin advertencias.
+✓ Defunciones: sin advertencias.
+✓ Cruce: sin advertencias.
+```
+
+Si aparece una advertencia representativa (ejemplo):
+
+```
+⚠️ Población: 1 advertencia(s):
+	 - Primer año > 1979 (1985); ¿dataset recortado o faltan filas?
+```
+
+## Nuevas banderas relevantes
+
+| Bandera | Script | Descripción |
+|---------|--------|-------------|
+| `--with-checks` | `run_all_preproc.py` / `preproc_poblac_defunc.py` | Ejecuta validaciones de integridad tras el cruce. |
+| `--no-lexis-ano` | `preproc_poblac_defunc.py` | Omite matriz Lexis por año. |
+| `--no-lexis-t` | `preproc_poblac_defunc.py` | Omite matriz Lexis por índice de periodo `t`. |
+| `--no-lexis-por-sexo` | `preproc_poblac_defunc.py` | Omite matrices Lexis segmentadas por sexo. |
+| `--tuberc-max-files` | Orquestador | Limita número de archivos de defunciones (depuración). |
+| `--tuberc-verbose` | Orquestador → `preproc_tuberc.py` | Controla nivel de log (0–2). |
+
+## Notas sobre el bug corregido (truncamiento de población)
+
+Se corrigió un error histórico de parsing que truncaba poblaciones al eliminar un dígito de miles (e.g. `380.350` → `38035`). La nueva lectura fuerza tipos texto y limpia numéricamente con regex, preservando magnitudes. La validación de referencia hombres 0–4 año 1979 asegura que el valor agregado (1,795,941) se mantenga estable en futuras iteraciones.
+
+## Próximos pasos sugeridos (opcional)
+
+- Añadir pruebas unitarias para validar el valor de referencia y ausencia de separadores de miles.
+- Documentar ejemplos de carga de tasas en notebooks de modelado.
+- Incluir un flag `--skip-defunciones` en el orquestador para acelerar iteraciones cuando sólo cambia población.
+
 
 ### Salidas de mortalidad y flags (nuevo)
 

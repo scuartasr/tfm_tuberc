@@ -31,6 +31,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser.add_argument("--fill-zeros", action="store_true", help="Rellenar ceros en cruce población-defunciones")
     parser.add_argument("--tuberc-max-files", type=int, default=None, help="Limitar archivos en preproc_tuberc.py (DEBUG_MAX_FILES)")
     parser.add_argument("--tuberc-verbose", type=int, default=2, help="Nivel de verbosidad para preproc_tuberc.py (VERBOSE_LEVEL)")
+    parser.add_argument("--with-checks", action="store_true", help="Ejecutar validaciones de integridad en el cruce final (propaga a preproc_poblac_defunc.py)")
 
     args = parser.parse_args(list(argv) if argv is not None else None)
 
@@ -73,6 +74,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             join_args += ["--rows", str(args.rows)]
         if args.fill_zeros:
             join_args.append("--fill-zeros")
+        if args.with_checks:
+            join_args.append("--with-checks")
         run_script(s_join, join_args)
 
     except subprocess.CalledProcessError as e:

@@ -109,6 +109,7 @@ source .venv/bin/activate
 	- `--dry-run`: propaga a scripts que lo soportan (no escribe salidas intermedias).
 	- `--rows N`: limita filas donde aplica.
 	- `--fill-zeros`: pasa a `preproc_poblac_defunc.py`.
+	- `--with-checks`: activa validaciones de integridad en el paso de cruce.
 	- `--tuberc-max-files N`: exporta `DEBUG_MAX_FILES` para `preproc_tuberc.py`.
 	- `--tuberc-verbose {0,1,2}`: exporta `VERBOSE_LEVEL` para `preproc_tuberc.py`.
 
@@ -136,7 +137,7 @@ source .venv/bin/activate
 
 ```bash
 source .venv/bin/activate
-python src/preproc/run_all_preproc.py --fill-zeros --tuberc-verbose 2
+python src/preproc/run_all_preproc.py --fill-zeros --with-checks --tuberc-verbose 2
 ```
 
 - Desactivar selectivamente matrices Lexis (opt-out):
@@ -173,7 +174,7 @@ python src/preproc/preproc_gret_poblacion.py --outdir data/processed/poblacion
 VERBOSE_LEVEL=2 DEBUG_MAX_FILES=5 python src/preproc/preproc_tuberc.py
 
 # 4) Join + tasas
-python src/preproc/preproc_poblac_defunc.py --fill-zeros --outdir data/processed/mortalidad
+python src/preproc/preproc_poblac_defunc.py --fill-zeros --with-checks --outdir data/processed/mortalidad
 ```
 
 ### Notas y solución de problemas
@@ -183,6 +184,7 @@ python src/preproc/preproc_poblac_defunc.py --fill-zeros --outdir data/processed
 - Columnas requeridas:
 	- Población larga requiere `ano, sexo, edad, poblacion`.
 	- Join requiere `ano, sexo, gr_et` en ambos CSV, más `poblacion` y `conteo_defunciones`.
+- Validaciones (`--with-checks`): se aplican sobre población (largo o agregado), defunciones y cruce para detectar regresiones (ver página "Validaciones" si se habilita).
 - Tasas: si `poblacion <= 0` o es `NaN`, la tasa queda `NaN` por diseño para evitar divisiones por cero.
 - Índice temporal `t`: es un índice entero consecutivo por año presente (no asume continuidad completa de años).
 - Verbosidad: ajusta `VERBOSE_LEVEL` en `preproc_tuberc.py` (`0` mínimo, `2` con resúmenes) y opcionalmente `SHOW_SUMMARY=1`.
