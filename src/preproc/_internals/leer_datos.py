@@ -41,7 +41,7 @@ def leer_datos(
     """
     ruta = Path(ruta_archivo)
     if not ruta.exists():
-        print(f"❌ El archivo no existe: {ruta_archivo}")
+        print(f"El archivo no existe: {ruta_archivo}")
         return None
 
     encodings = ["utf-8", "latin-1", "cp1252"]
@@ -61,7 +61,7 @@ def leer_datos(
                 **read_kwargs,
             )
             print(
-                f"✅ Datos leídos correctamente desde {ruta_archivo} con encoding '{enc}'. Forma: {datos.shape}"
+                f"Datos leídos correctamente desde {ruta_archivo} con encoding '{enc}'. Forma: {datos.shape}"
             )
             datos = _postprocess(
                 datos,
@@ -74,7 +74,7 @@ def leer_datos(
         except UnicodeDecodeError as e:
             last_error = e
         except Exception as e:
-            print(f"❌ Error al leer el archivo {ruta_archivo} con encoding '{enc}': {e}")
+            print(f"Error al leer el archivo {ruta_archivo} con encoding '{enc}': {e}")
             return None
 
     # Intento final con reemplazo de caracteres problemáticos
@@ -89,7 +89,7 @@ def leer_datos(
             **read_kwargs,
         )
         print(
-            f"✅ Datos leídos con reemplazo de caracteres desde {ruta_archivo}. Forma: {datos.shape}"
+            f"Datos leídos con reemplazo de caracteres desde {ruta_archivo}. Forma: {datos.shape}"
         )
         datos = _postprocess(
             datos,
@@ -100,7 +100,7 @@ def leer_datos(
         )
         return datos
     except Exception:
-        print(f"❌ Error al leer el archivo {ruta_archivo}: {last_error}")
+        print(f"Error al leer el archivo {ruta_archivo}: {last_error}")
         return None
 
 
@@ -119,11 +119,11 @@ def _postprocess(
         try:
             if _detectar_patron_miles(df):
                 print(
-                    f"⚠️ Posible separador de miles detectado en '{ruta_archivo}'. "
+                    f"Posible separador de miles detectado en '{ruta_archivo}'. "
                     "Considere usar force_object=True y limpieza posterior."
                 )
         except Exception as e:  # Defensivo: no romper flujo
-            print(f"⚠️ Advertencia: fallo al detectar patrón de miles ({e}).")
+            print(f"Advertencia: fallo al detectar patrón de miles ({e}).")
     return df
 
 

@@ -13,13 +13,13 @@ def normalizar_nombres_columnas(df: pd.DataFrame) -> pd.DataFrame:
     pd.DataFrame: DataFrame con nombres de columnas normalizados.
     """
     if df is None:
-        print("⚠️ No se normalizan columnas porque el DataFrame es None")
+        print("No se normalizan columnas porque el DataFrame es None")
         return df
     try:
         import janitor
         df = df.clean_names()
-        print("✅ Nombres de columnas normalizados")
+        print("Nombres de columnas normalizados")
         return df
     except Exception as e:
-        print(f"❌ Error al normalizar nombres de columnas: {e}")
+        print(f"Error al normalizar nombres de columnas: {e}")
         return df

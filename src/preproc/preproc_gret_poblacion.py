@@ -82,9 +82,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 				df_ns.to_csv(out_path_ns, index=False)
 				print(f"Escrito agregada sin sexo a: {out_path_ns}")
 			else:
-				print("⚠️ No se pudieron generar agregados sin sexo: faltan columnas requeridas")
+				print("No se pudieron generar agregados sin sexo: faltan columnas requeridas")
 		except Exception as e:
-			print(f"⚠️ No se pudo escribir versión sin sexo: {e}")
+			print(f"No se pudo escribir versión sin sexo: {e}")
 	else:
 		print("\nDry-run: no se escribió archivo de salida.")
 

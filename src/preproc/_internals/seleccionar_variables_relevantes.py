@@ -18,8 +18,8 @@ def seleccionar_variables_relevantes(
     """
     try:
         df_seleccionado = df[variables]
-        print("✅ Variables seleccionadas correctamente")
+        print("Variables seleccionadas correctamente")
         return df_seleccionado
     except KeyError as e:
-        print(f"❌ Error al seleccionar variables: {e}")
+        print(f"Error al seleccionar variables: {e}")
         return df

@@ -98,7 +98,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 				resumen_advertencias,
 			)
 		except ImportError as e:
-			print(f"⚠️ No se pudieron importar validaciones: {e}")
+			print(f"No se pudieron importar validaciones: {e}")
 		else:
 			# Intentar leer población y defunciones originales para validación (si existen en disco)
 			try:
@@ -106,13 +106,13 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 				pop_warns = validar_poblacion(df_pop, critical=False)
 				resumen_advertencias("Población", pop_warns)
 			except Exception as e:
-				print(f"⚠️ No se pudo validar población: {e}")
+				print(f"No se pudo validar población: {e}")
 			try:
 				df_def = pd.read_csv(args.defunc)
 				def_warns = validar_defunciones(df_def)
 				resumen_advertencias("Defunciones", def_warns)
 			except Exception as e:
-				print(f"⚠️ No se pudo validar defunciones: {e}")
+				print(f"No se pudo validar defunciones: {e}")
 			cruce_warns = validar_cruce(df_final)
 			resumen_advertencias("Cruce", cruce_warns)
 
@@ -198,13 +198,13 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 									f"Escrita matriz de Lexis por sexo={sx} (tasa_x100k) a: {os.path.join(outdir, f'tasa_mortalidad_lexis_sexo{sx}.csv')}"
 								)
 							except Exception as e:
-								print(f"⚠️ No se pudo generar Lexis para sexo={sx}: {e}")
+								print(f"No se pudo generar Lexis para sexo={sx}: {e}")
 				except Exception as e:
-					print(f"❌ Error generando matrices de Lexis: {e}")
+					print(f"Error generando matrices de Lexis: {e}")
 			else:
-				print("⚠️ No se encontraron todas las columnas necesarias para generar 'tasas_mortalidad_gret_per.csv'.")
+				print("No se encontraron todas las columnas necesarias para generar 'tasas_mortalidad_gret_per.csv'.")
 		except Exception as e:
-			print(f"❌ Error generando 'tasas_mortalidad_gret_per.csv': {e}")
+			print(f"Error generando 'tasas_mortalidad_gret_per.csv': {e}")
 	else:
 		print("\nDry-run: no se escribió archivo de salida.")
 

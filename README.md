@@ -41,6 +41,39 @@ source .venv/bin/activate
 python src/preproc/run_all_preproc.py --fill-zeros --with-checks --tuberc-verbose 2
 ```
 
+## Estilo reutilizable para gráficos (Matplotlib/Seaborn)
+
+Se agregó un pequeño módulo de utilidades en `src/viz/style.py` para centralizar la estética usada en los notebooks:
+
+- `get_palette(n_series, cmap_name="tab20")`: devuelve una lista de colores consistente con el notebook descriptivo.
+- `set_font_ancizar(...)`: activa la familia de fuente Ancizar (si está instalada) y la aplica en Matplotlib.
+- `apply_matplotlib_style(...)`: atajo para aplicar fuente y paleta globalmente.
+
+Uso típico en un notebook (desde la carpeta `descriptivo/` u otra):
+
+```python
+import sys, os
+sys.path.append(os.path.abspath("../src"))  # añade el layout "src" al PYTHONPATH
+
+from viz.style import get_palette, apply_matplotlib_style
+
+# Aplica fuente Ancizar (si está instalada en el sistema) y fija paleta de 7 colores
+apply_matplotlib_style(n_colors=7, base_font_size=11)
+
+# Usar paleta explícitamente
+colors = get_palette(3)
+plt.plot([1,2,3],[1,4,9], color=colors[0])
+```
+
+Notas:
+
+- Si Ancizar no está instalada, se usará una familia de respaldo (por defecto, `serif`). Puedes pasar rutas a archivos `.ttf/.otf` con `search_paths` para registrarla on-the-fly.
+- El módulo no incorpora archivos de fuentes por licencia; si los tienes, colócalos (por ejemplo) en `assets/fonts/` y úsalo así:
+
+```python
+apply_matplotlib_style(search_paths=["../assets/fonts"])  # registra .ttf/.otf encontrados
+```
+
 ## Uso rápido del pipeline
 
 Ejecuta todo el flujo (población → agregados → defunciones → cruce + tasas + matrices Lexis) con validaciones:
@@ -89,7 +122,7 @@ Ejemplo de salida esperada sin advertencias:
 Si aparece una advertencia representativa (ejemplo):
 
 ```
-⚠️ Población: 1 advertencia(s):
+Población: 1 advertencia(s):
 	 - Primer año > 1979 (1985); ¿dataset recortado o faltan filas?
 ```
 

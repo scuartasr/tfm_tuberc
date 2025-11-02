@@ -25,7 +25,7 @@ def corregir_grupos_etarios_agrupado(df: pd.DataFrame) -> pd.DataFrame:
     """
     required_cols = {"ano", "sexo", "gru_ed1", "conteo_defunciones"}
     if not required_cols.issubset(df.columns):
-        print(f"⚠️ No se corrigen grupos etarios: faltan columnas {required_cols - set(df.columns)}")
+        print(f"No se corrigen grupos etarios: faltan columnas {required_cols - set(df.columns)}")
         return df
 
     datos = df.copy()
@@ -60,7 +60,7 @@ def corregir_grupos_etarios_agrupado(df: pd.DataFrame) -> pd.DataFrame:
     # Eliminar filas sin asignación de gr_et
     datos = datos.dropna(subset=["gr_et"]).copy()
     if datos.empty:
-        print("⚠️ Tras la corrección de grupos etarios no quedaron filas.")
+        print("Tras la corrección de grupos etarios no quedaron filas.")
         return datos
 
     datos["gr_et"] = datos["gr_et"].astype(int)
@@ -69,7 +69,7 @@ def corregir_grupos_etarios_agrupado(df: pd.DataFrame) -> pd.DataFrame:
     out = (
         datos.groupby(["ano", "sexo", "gr_et"], as_index=False)["conteo_defunciones"].sum()
     )
-    print("✅ Grupos etarios corregidos y datos re-agrupados")
+    print("Grupos etarios corregidos y datos re-agrupados")
     return out
 
 
@@ -97,7 +97,7 @@ def asignar_gr_et_sin_reagrupar(df: pd.DataFrame) -> pd.DataFrame:
     """
     required_cols = {"ano", "sexo", "gru_ed1", "conteo_defunciones"}
     if not required_cols.issubset(df.columns):
-        print(f"⚠️ No se asigna gr_et: faltan columnas {required_cols - set(df.columns)}")
+        print(f"No se asigna gr_et: faltan columnas {required_cols - set(df.columns)}")
         return df
 
     datos = df.copy()
@@ -132,7 +132,7 @@ def asignar_gr_et_sin_reagrupar(df: pd.DataFrame) -> pd.DataFrame:
     # Eliminar filas sin asignación de gr_et
     datos = datos.dropna(subset=["gr_et"]).copy()
     if datos.empty:
-        print("⚠️ Tras la asignación de gr_et no quedaron filas.")
+        print("Tras la asignación de gr_et no quedaron filas.")
         return datos
 
     datos["gr_et"] = datos["gr_et"].astype(int)
@@ -140,5 +140,5 @@ def asignar_gr_et_sin_reagrupar(df: pd.DataFrame) -> pd.DataFrame:
     # ['ano','sexo','gr_et','gru_ed1','conteo_defunciones'] si están presentes
     cols = [c for c in ["ano", "sexo", "gr_et", "gru_ed1", "conteo_defunciones"] if c in datos.columns]
     out = datos[cols].copy()
-    print("✅ gr_et asignado sin re-agrupación (detalle por gru_ed1 conservado)")
+    print("gr_et asignado sin re-agrupación (detalle por gru_ed1 conservado)")
     return out

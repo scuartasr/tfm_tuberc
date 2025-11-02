@@ -149,6 +149,6 @@ def resumen_advertencias(nombre: str, warns: list[str]) -> None:
     if not warns:
         print(f"✓ {nombre}: sin advertencias.")
     else:
-        print(f"⚠️ {nombre}: {len(warns)} advertencia(s):")
+        print(f"{nombre}: {len(warns)} advertencia(s):")
         for w in warns:
             print(f"   - {w}")

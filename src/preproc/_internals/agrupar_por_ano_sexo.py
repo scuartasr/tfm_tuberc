@@ -21,8 +21,8 @@ def agrupar_por_ano_sexo(
     """
     try:
         df_agrupado = df.groupby([ano_columna, sexo_columna, grupo_etario_columna]).size().reset_index(name='conteo_defunciones')
-        print("✅ Datos agrupados correctamente")
+        print("Datos agrupados correctamente")
         return df_agrupado
     except KeyError as e:
-        print(f"❌ Error al agrupar datos: {e}")
+        print(f"Error al agrupar datos: {e}")
         return df

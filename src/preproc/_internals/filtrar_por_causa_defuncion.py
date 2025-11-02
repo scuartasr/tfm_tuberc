@@ -20,17 +20,17 @@ def filtrar_por_causa_defuncion(
     """
     # Validaciones defensivas
     if df is None:
-        print("⚠️ No se puede filtrar porque el DataFrame es None")
+        print("No se puede filtrar porque el DataFrame es None")
         return df
 
     if causa_columna not in df.columns:
-        print(f"⚠️ La columna '{causa_columna}' no existe en el DataFrame. Columnas disponibles: {list(df.columns)[:10]}...")
+        print(f"La columna '{causa_columna}' no existe en el DataFrame. Columnas disponibles: {list(df.columns)[:10]}...")
         return df
 
     try:
         df_filtrado = df[df[causa_columna].isin(causas_homologadas)]
-        print("✅ Datos filtrados correctamente")
+        print("Datos filtrados correctamente")
         return df_filtrado
     except Exception as e:
-        print(f"❌ Error al filtrar datos: {e}")
+        print(f"Error al filtrar datos: {e}")
         return df

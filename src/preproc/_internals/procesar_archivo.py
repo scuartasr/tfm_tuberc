@@ -17,10 +17,10 @@ from src.preproc._internals.corregir_grupos_etarios import corregir_grupos_etari
 
 
 def procesar_archivo(ruta: str) -> pd.DataFrame | None:
-    print(f"\n➡️ Procesando: {ruta}")
+    print(f"\nProcesando: {ruta}")
     df = leer_datos(ruta)
     if df is None:
-        print("⚠️ Saltando archivo por error de lectura")
+        print("Saltando archivo por error de lectura")
         return None
 
     df = normalizar_nombres_columnas(df)
@@ -30,7 +30,7 @@ def procesar_archivo(ruta: str) -> pd.DataFrame | None:
         ano_archivo = _extraer_ano_de_nombre(ruta)
         if ano_archivo is not None:
             df['ano'] = ano_archivo
-            print(f"ℹ️ Columna 'ano' añadida desde nombre de archivo: {ano_archivo}")
+            print(f"Columna 'ano' añadida desde nombre de archivo: {ano_archivo}")
 
     # Filtrar por causa homologada (2)
     df = filtrar_por_causa_defuncion(
@@ -43,7 +43,7 @@ def procesar_archivo(ruta: str) -> pd.DataFrame | None:
     columnas = ['ano', 'sexo', 'gru_ed1']
     faltantes = [c for c in columnas if c not in df.columns]
     if faltantes:
-        print(f"⚠️ Columnas faltantes {faltantes} en {ruta}. Saltando archivo.")
+        print(f"Columnas faltantes {faltantes} en {ruta}. Saltando archivo.")
         return None
     df = seleccionar_variables_relevantes(df, columnas)
 

@@ -17,7 +17,7 @@ try:
 except Exception:
     # Fallback simple si tqdm no está disponible
     def tqdm(iterable, **kwargs):  # type: ignore
-        print("⚠️ tqdm no está instalado; iterando sin barra de progreso.")
+        print("tqdm no está instalado; iterando sin barra de progreso.")
         return iterable
 
 # Asegurar que el proyecto raíz esté en sys.path antes de importar desde 'src.*'
@@ -88,7 +88,7 @@ if __name__ == "__main__":
             pass
 
     if not archivos:
-        print(f"❌ No se encontraron archivos en {base_dir}")
+        print(f"No se encontraron archivos en {base_dir}")
         sys.exit(1)
 
     resultados = []
@@ -122,18 +122,18 @@ if __name__ == "__main__":
         pass
 
     if not resultados:
-        print("❌ No se generaron resultados. Revisa los logs anteriores.")
+        print("No se generaron resultados. Revisa los logs anteriores.")
         sys.exit(1)
 
     df_final = pd.concat(resultados, ignore_index=True)
-    log(f"\n📊 Tabla final concatenada: forma {df_final.shape}")
+    log(f"\nTabla final concatenada: forma {df_final.shape}")
 
     # Guardar resultado
     out_dir = Path("./data/processed/defunc")
     out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / "defunciones_agrupadas.csv"
     df_final.to_csv(out_path, index=False)
-    log(f"💾 Guardado en: {out_path.resolve()}")
+    log(f"Guardado en: {out_path.resolve()}")
 
     # Guardar agregado por gr_et
     try:
@@ -143,7 +143,7 @@ if __name__ == "__main__":
             )
             out_path_gr = out_dir / "defunciones_por_gr_et.csv"
             df_gr_et.to_csv(out_path_gr, index=False)
-            log(f"💾 Guardado agregado por gr_et en: {out_path_gr.resolve()}")
+            log(f"Guardado agregado por gr_et en: {out_path_gr.resolve()}")
 
             # Además: versión agregada por año y grupo etario (sin sexo)
             try:
@@ -152,11 +152,11 @@ if __name__ == "__main__":
                 )
                 out_path_gr_ns = out_dir / "defunciones_por_gr_et_sin_sexo.csv"
                 df_gr_et_ns.to_csv(out_path_gr_ns, index=False)
-                log(f"💾 Guardado agregado por gr_et (sin sexo) en: {out_path_gr_ns.resolve()}")
+                log(f"Guardado agregado por gr_et (sin sexo) en: {out_path_gr_ns.resolve()}")
             except Exception as e:
-                log(f"⚠️ No se pudo guardar el agregado sin sexo: {e}")
+                log(f"No se pudo guardar el agregado sin sexo: {e}")
     except Exception as e:
-        log(f"⚠️ No se pudo guardar el agregado por gr_et: {e}")
+        log(f"No se pudo guardar el agregado por gr_et: {e}")
 
     # Resumen en consola controlado por VERBOSE_LEVEL (>=2) o SHOW_SUMMARY si no se definió VERBOSE_LEVEL
     if VERBOSE_ENV is not None:
@@ -189,7 +189,7 @@ if __name__ == "__main__":
                     df_final.groupby(['edad_grupo'], as_index=False)['conteo_defunciones']
                     .sum().sort_values('conteo_defunciones', ascending=False).head(10)
                 )
-                log("\n👶 Top 10 grupos 'edad_grupo' por defunciones (global):", min_level=2)
+                log("\nTop 10 grupos 'edad_grupo' por defunciones (global):", min_level=2)
                 log(resumen_edad.to_string(index=False), min_level=2)
 
             resumen_ano = (
@@ -198,9 +198,9 @@ if __name__ == "__main__":
                 .sum()
                 .sort_values(['ano'])
             )
-            log("\n🧮 Totales por año:", min_level=2)
+            log("\nTotales por año:", min_level=2)
             log(resumen_ano.to_string(index=False), min_level=2)
         except Exception as e:
-            log(f"⚠️ No se pudo generar el resumen final: {e}")
+            log(f"No se pudo generar el resumen final: {e}")
 
-    log(f"✅ Finalizado. Archivos OK: {procesados} | Fallidos/omitidos: {fallidos}")
+    log(f"Finalizado. Archivos OK: {procesados} | Fallidos/omitidos: {fallidos}")

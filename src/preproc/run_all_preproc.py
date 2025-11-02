@@ -79,10 +79,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         run_script(s_join, join_args)
 
     except subprocess.CalledProcessError as e:
-        print(f"❌ Falló la ejecución de {e.cmd}: código {e.returncode}")
+        print(f"Falló la ejecución de {e.cmd}: código {e.returncode}")
         return e.returncode
     except Exception as ex:
-        print(f"❌ Error: {ex}")
+        print(f"Error: {ex}")
         return 1
     return 0
 

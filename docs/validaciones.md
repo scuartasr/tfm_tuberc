@@ -95,7 +95,7 @@ La utilidad auxiliar `resumen_advertencias(nombre, warns)` imprime:
 
 ```
 ✓ Población: sin advertencias.
-⚠️ Defunciones: 1 advertencia(s):
+Defunciones: 1 advertencia(s):
    - Valores inesperados en 'sexo': {7}
 ```
 
