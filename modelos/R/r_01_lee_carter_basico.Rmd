@@ -1,0 +1,177 @@
+# 1. Modelo básico de Lee-Carter
+
+# 1.1. Lectura de paquetes
+
+```{r}
+library(StMoMo)
+library(matrixStats)
+```
+
+# 1.2. Cargado de datos
+
+```{r}
+# Apertura del archivo
+ruta <- "../../data/processed/mortalidad/tasa_mortalidad_lexis.csv"
+raw <- read.csv(ruta, check.names = FALSE, stringsAsFactors = FALSE)
+
+# Selección de los períodos y los índices de los grupos etarios
+age_labels <- raw[[1]]
+age_labels = as.integer(age_labels)
+data_mat <- as.matrix(raw[, -1, drop=FALSE])
+rownames(data_mat) <- age_labels
+year_labels <- data_mat |> colnames()
+year_labels = as.integer(year_labels)
+```
+
+```{r}
+data_mat[1:5, 1:5]
+```
+
+
+# 1.3. Transformación a datos por persona y selecció de datos de entrenamiento y OOT
+
+```{r}
+# Obtención de matrix de Lexis con datos por persona
+# Anteriormente estaba en tasa por 100 mil habitantes
+mx_100k <- matrix(
+  as.numeric(data_mat),
+  nrow=nrow(data_mat),
+  dimnames=dimnames(data_mat)
+)
+mx <- mx_100k / 1e5
+```
+
+```{r}
+# Índices de datos de entrenamiento y detesteo
+cnt_train_year <- length(year_labels) - 5
+train_years_idx <- 1:cnt_train_year
+test_years_idx <- (cnt_train_year + 1):length(year_labels)
+
+train_years <- year_labels[train_years_idx]
+test_years <- year_labels[test_years_idx]
+
+mx_train <- mx[, train_years_idx, drop=FALSE]
+mx_test  <- mx[, test_years_idx , drop=FALSE]
+```
+
+# 1.4. Modelado
+
+```{r}
+# Exposición
+Ext_train <- matrix(
+  1e5,
+  nrow=nrow(mx_train),
+  ncol=ncol(mx_train),
+  dimnames=dimnames(mx_train)
+)
+Dxt_train <- mx_train * Ext_train
+```
+
+
+```{r}
+#LC_01 <- lc(link="log")
+#LC_01 <- rh(link="log")
+#LC_01 <- cbd(link="log")
+LC_01 <- apc(link="log")
+
+fit_lc_01 <- fit(
+  LC_01,
+  Dxt=Dxt_train,
+  Ext=Ext_train,
+  ages=age_labels
+  #ages.fit=age_labels,
+  #years.fit=train_years
+)
+```
+# Pronóstico en OOT
+
+```{r}
+# Cálculo del pronóstico para los cinco períodos del OOT
+fc_01 <- forecast(fit_lc_01, h=5)
+pred_test <- fc_01$rates
+
+# Obtención de tasas predichas y observadas por 100 mil habitantes
+pred_test_100k <- pred_test * 1e5
+obs_mx_100k <- mx_test * 1e5
+```
+
+# Métricas de ajuste
+
+```{r}
+# Cálculo del error absoluto
+error <- obs_mx_100k - pred_test_100k
+abs_error <- abs(error)
+
+# Cálculo de métricas
+MAE_01 <- mean(abs_error)
+MSE_01 <- mean(error ^ 2)
+RMSE_01 <- sqrt(MSE_01)
+
+eps <- 1e-10
+MAPE_01 <- mean(
+  abs((error) / pmax(abs(obs_mx_100k), eps))
+) * 100
+SMAPE_01 <- mean(
+  2 * abs_error / pmax(abs(obs_mx_100k) + abs(pred_test_100k), eps)
+) * 100
+
+# Errores en escala logarítmica
+log_obs <- log(mx_test)
+log_pred <- log(pmax(pred_test, eps))
+
+E_log <- log_obs - log_pred
+MSE_log <- mean(E_log ^ 2)
+RMSE_log <- sqrt(MSE_log)
+
+resumen_test <- data.frame(
+  metric = c("MAE_x100k", "MAPE_%", "SMAPE_%", "MSE_x100k", "RMSE_x100k",
+             "MSE_log", "RMSE"),
+  value = c(MAE_01, MAPE_01, SMAPE_01, MSE_01, RMSE_01,
+            MSE_log, RMSE_log)
+)
+
+paste("Resumen global en OOT:")
+paste(
+  resumen_test
+)
+```
+# 1.6. Gráficos
+
+```{r}
+plot(
+  fit_lc_01$ax,
+  type="l",
+  x=age_labels,
+  lwd=2,
+  main=expression(a[x]~"por edad", ylab="a_x", xlab="Edad")
+)
+```
+
+```{r}
+plot(
+  fit_lc_01$bx,
+  type="l",
+  x=age_labels,
+  lwd=2,
+  main=expression(b[x]~"por edad", ylab="b_x", xlab="Edad")
+)
+```
+
+```{r}
+plot(
+  fit_lc_01$kt[1, ],
+  type="l",
+  x=train_years,
+  lwd=2,
+  main=expression(k[t]~"por período", ylab="k_t", xlab="Edad")
+)
+```
+
+```{r}
+plot(fit_lc_01)
+```
+
+```{r}
+plot(fc_01)
+```
+

@@ -1,0 +1,11 @@
+{
+  "trial": 2,
+  "val_loss": 0.005688676610589027,
+  "epochs": 75,
+  "seconds": 4.11,
+  "units": 96,
+  "stacked": false,
+  "dropout": 0.4,
+  "lr": 0.001,
+  "batch_size": 32
+}
