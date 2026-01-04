@@ -1,0 +1,6 @@
+channel,mean_abs_shap
+logm_norm,0.040025270878483836
+feature_period_norm,0.0042402628196733134
+feature_cohort_norm,0.016641704761508544
+age_mid_norm,0.029117555393708826
+target_period_norm,0.005156906054885393
